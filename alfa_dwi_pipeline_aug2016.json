@@ -1,0 +1,13 @@
+{"fslbet.25": "fsl5.0-bet %s %s -R -f 0.25 -g 0 -m",
+"fslbet.5": "fsl5.0-bet %s %s -R -f 0.5 -g 0 -m",
+"dwidenoise": "python /home/grg/denoising/denoising.py -i %s",
+"eddycorrect": "fsl5.0-eddy_correct %s %s 0",
+"extractb0": "fsl5.0-fslroi %s %s 0 1",
+"fslfast": "fsl5.0-fast -t 1 -n 3 -B -b -g -o %s %s",
+"ants_t1": "ANTS 3 -m CC[ %s, %s, 1, 4] -r Gauss[0,3] -t Elast[1.5] -i 30x20x10 -o %s",
+"ants_aal": "ANTS 3 -m CC[ %s, %s, 1, 2] -r Gauss[0,3] -t SyN[0.25] -i 10x50x50x20 -o %s",
+"warp": "WarpImageMultiTransform 3 %s %s -R %s %s %s",
+"warp_AAL": "WarpImageMultiTransform 3 %s %s -R %s %s %s --use-NN",
+"dilate": "fsl5.0-fslmaths %s -kernel sphere 2 -dilD %s",
+"dtifit": "fsl5.0-dtifit -k %s -o %s -m %s -r %s -b %s"
+}
