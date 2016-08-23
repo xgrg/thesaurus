@@ -8,6 +8,7 @@
 "ants_aal": "ANTS 3 -m CC[ %s, %s, 1, 2] -r Gauss[0,3] -t SyN[0.25] -i 10x50x50x20 -o %s",
 "warp": "WarpImageMultiTransform 3 %s %s -R %s %s %s",
 "warp_AAL": "WarpImageMultiTransform 3 %s %s -R %s %s %s --use-NN",
+"warp_AAL2DWI": "WarpImageMultiTransform 3 %s %s -R %s %s %s --use-NN",
 "dilate": "fsl5.0-fslmaths %s -kernel sphere 2 -dilD %s",
 "dtifit": "fsl5.0-dtifit -k %s -o %s -m %s -r %s -b %s"
 }
