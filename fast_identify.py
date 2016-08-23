@@ -55,6 +55,9 @@ def identify_tissues(fast, b0, doit=False, verbose=True):
     if verbose:
         print zip(headers, news)
 
+    if not doit:
+        print 'Not renaming the files. Just printing them.'
+
     for old in olds:
         cmd = 'mv %s %s.backup'%(old, old)
         if verbose:
@@ -89,17 +92,20 @@ if __name__ == '__main__':
     parser.add_argument("subject", type=str, help='subject in the Axon database')
     parser.add_argument("--database", type=str, help='Axon database', required=False)
     parser.add_argument("-v", dest='verbose', action='store_true', required=False, default=True)
-    parser.add_argument("-n", dest='dontdoit', action='store_true', required=False, help='Identifies the labels but stops before renaming the files')
+    parser.add_argument("--doit", dest='doit', action='store_true', required=False, help='Identifies the labels but stops before renaming the files')
     args = parser.parse_args()
 
     subject = args.subject
     database = args.database
     verbose = args.verbose
-    dontdoit = args.dontdoit
+    doit = args.doit
     if database is None:
         database = '/home/grg/data/ALFA_DWI'
 
-    identify_tissues_axon(subject, database, not dontdoit, verbose)
+    if doit is None:
+        doit = False
+
+    identify_tissues_axon(subject, database, doit, verbose)
 
 
 
