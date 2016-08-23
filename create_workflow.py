@@ -5,6 +5,19 @@ import os.path as osp
 from soma_workflow.client import Job, Workflow, Helper
 
 
+def create_workflow(inp, out, names = None, verbose=False):
+    if not osp.isfile(inp):
+        raise Exception('File not found %s'%inp)
+
+    commands = [e.rstrip('\n').split(' ') for e in open(inp).readlines()]
+    if verbose:
+        print commands
+    names = ['job_%s'%i for i in xrange(len(commands))] if names is None else names
+    jobs = [Job(command=cmd, name=name) for cmd, name in zip(commands, names)]
+    workflow = Workflow(jobs=jobs, dependencies=[])
+    Helper.serialize(out, workflow)
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter,
 	    description=textwrap.dedent('''\
@@ -19,16 +32,7 @@ if __name__ == '__main__':
     inp = args.input
     out = args.output
 
-    if not osp.isfile(inp):
-        raise Exception('File not found %s'%inp)
-
-    commands = [e.rstrip('\n').split(' ') for e in open(inp).readlines()]
-    if args.verbose:
-        print commands
-
-    jobs = [Job(command=cmd, name='job_%s'%i) for i,cmd in enumerate(commands)]
-    workflow = Workflow(jobs=jobs, dependencies=[])
-    Helper.serialize(out, workflow)
+    create_workflow(inp, out, verbose=args.verbose)
 
     if osp.isfile(out):
         print 'Workflow successfully created (%s)'%out
