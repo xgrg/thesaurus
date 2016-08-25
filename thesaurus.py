@@ -35,15 +35,20 @@ class ALFAHelper(object):
         j = json.load(open(jsonfile))
         args_types = {
             'ants_t1': [ '@ALFA DWI B0 Brain FSL FAST White matter', '@ALFA Denoised Nobias SPM Dilated White matter', 'ALFA ANTS Elast T1 to DWI Transformation Template Filename'],
+            'ants_dwi': [ '@ALFA Denoised Nobias SPM Dilated White matter', '@ALFA DWI B0 Brain FSL FAST White matter', 'ALFA ANTS Elast DWI to T1 Transformation Template Filename'],
             'ants_aal': [ '@ALFA Denoised Nobias T1 Image', '#/home/grg/data/templates/MNI_atlas_templates/MNI_T1.nii', 'ALFA ANTS SyN MNI to T1 Transformation Template Filename'],
             'warp': [ '@ALFA Denoised Nobias T1 Image', 'ALFA T1 Image Warped to DWI space', '@ALFA DWI B0 Map', '@ALFA ANTS Elast T1 to DWI Transformation', '@ALFA ANTS Elast T1 to DWI Affine Transformation'],
+            'warp_md': [ '@ALFA Mean Diffusivity Image', 'ALFA DWI MD Map Warped to T1 space', '@ALFA Denoised Nobias T1 Image', '@ALFA ANTS Elast DWI to T1 Transformation', '@ALFA ANTS Elast DWI to T1 Affine Transformation'],
+            'warp_md2MNI': [ '@ALFA DWI MD Map Warped to T1 space', 'ALFA DWI MD Map Warped to MNI space', '#/home/grg/data/templates/MNI_atlas_templates/MNI_T1.nii', '@ALFA ANTS SyN MNI to T1 Affine Transformation', '@ALFA ANTS SyN MNI to T1 Inverse Transformation'],
             'warp_AAL': ['#/home/grg/data/templates/MNI_atlas_templates/aal_MNI_V4.nii', 'ALFA AAL Atlas Warped to T1 space', 'ALFA Denoised Nobias T1 Image', '@ALFA ANTS SyN MNI to T1 Transformation', '@ALFA ANTS SyN MNI to T1 Affine Transformation'],
             'warp_AAL2DWI': ['@ALFA AAL Atlas Warped to T1 space', 'ALFA AAL Atlas Warped to DWI space', '@ALFA DWI B0 Map', '@ALFA ANTS Elast T1 to DWI Transformation', '@ALFA ANTS Elast T1 to DWI Affine Transformation'],
-            'dtifit': ['@ALFA Denoised Corrected DWI Image', 'ALFA DWI FSL DTIFIT Template Filename', '@ALFA DWI B0 FSL Brain Mask', '@Raw Bvec File', '@Raw Bval File'],
+            'dtifit': ['@ALFA Denoised Corrected DWI Image', 'ALFA DWI FSL DTIFIT Template Filename', '@ALFA DWI B0 FSL Brain Mask', '@Motion-corrected Bvec File', '@Raw Bval File'],
             'eddycorrect' : ['@ALFA Denoised LPCA DWI Image', 'ALFA Denoised Corrected DWI Image'],
             'extractb0': ['@ALFA Denoised Corrected DWI Image', 'ALFA DWI B0 Map'],
             'fslbet.25' : ['@ALFA DWI B0 Map', 'ALFA DWI B0 FSL Masked Brain'],
-            'fslfast': ['!ALFA DWI B0 FSL Masked Brain','ALFA DWI B0 FSL Masked Brain']
+            'fslfast': ['!ALFA DWI B0 FSL Masked Brain','ALFA DWI B0 FSL Masked Brain'],
+            'rotcorr': ['@Raw Bvec File', 'Motion-corrected Bvec File', '@FSL Eddy current Correction Logfile'],
+            'roistats': ['@ALFA AAL Atlas Warped to DWI space', '@ALFA Mean Diffusivity Image', 'ALFA Mean Diffusivity (AAL) ROI stats']
                 }
         types = args_types[name]
         dsk = []
@@ -51,11 +56,18 @@ class ALFAHelper(object):
             t = each.strip('@#!')
             d = t
             if not each.startswith('#'):
-                fmt = 'gz compressed NIFTI-1 image' if not 'DTIFIT' in t else 'Directory'
+                if 'DTIFIT' in t:
+                    fmt = 'Directory'
+                elif 'Bvec' in t:
+                    fmt = 'Bvec file'
+                elif 'stats' in t:
+                    fmt = 'CSV file'
+                else:
+                    fmt = 'gz compressed NIFTI-1 image'
                 d = self.find_diskitem(subject, t, fmt=fmt).fullPath()
                 if each.startswith('@'):
                     if not osp.isfile(d) and not osp.isdir(d):
-                        raise Exception('%s not found while declared as input (or remove the leading @)'%d)
+                        raise Exception('%s not found (type %s) while declared as input (or remove the leading @)'%(d, t))
                 if each.startswith('!'):
                     d = self.find_diskitem(subject, t, fmt=fmt).fullPath()
                     d = d[:d.index('.')]
