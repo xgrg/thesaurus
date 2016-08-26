@@ -48,7 +48,8 @@ class ALFAHelper(object):
             'fslbet.25' : ['@ALFA DWI B0 Map', 'ALFA DWI B0 FSL Masked Brain'],
             'fslfast': ['!ALFA DWI B0 FSL Masked Brain','ALFA DWI B0 FSL Masked Brain'],
             'rotcorr': ['@Raw Bvec File', 'Motion-corrected Bvec File', '@FSL Eddy current Correction Logfile'],
-            'roistats': ['@ALFA AAL Atlas Warped to DWI space', '@ALFA Mean Diffusivity Image', 'ALFA Mean Diffusivity (AAL) ROI stats']
+            'roistats': ['@ALFA AAL Atlas Warped to DWI space', '@ALFA Mean Diffusivity Image', 'ALFA Mean Diffusivity (AAL) ROI stats'],
+            'denoising': ['@ALFA DWI Raw Image']
                 }
         types = args_types[name]
         dsk = []
