@@ -39,8 +39,8 @@ class AxonInventory(object):
             self.headers.add(each.type.name)
             self.identified[subject].setdefault(each.type.name, []).append(each.fullPath())
 
-        self.index = list(set(self.index))
-        self.headers = list(self.headers)
+        self.index = sorted(list(set(self.index)))
+        self.headers = sorted(list(self.headers))
         self.repository = directory
 
         self.count_table = []
