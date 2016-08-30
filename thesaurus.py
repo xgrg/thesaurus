@@ -12,12 +12,12 @@ class InputFileMissing(Exception):
 class ALFAHelper(object):
     '''Returns filenames from existing items in the ALFA repository
     or suggests new ones according to the Axon ontology'''
-    def __init__(self, directory='/home/grg/data/ALFA_DWI', jsonfile='/home/grg/git/alfa/alfa_dwi_iotypes.json'):
+    def __init__(self, directory='/home/grg/data/ALFA_DWI', jsonfile='/home/grg/git/alfa/alfa_dwi_pipeline_io_aug2016.json'):
         from brainvisa import axon
         axon.initializeProcesses()
         import neuroHierarchy
         self.__db = neuroHierarchy.databases._databases[directory]
-        self.args_types = json.load(jsonfile)
+        self.args_types = json.load(open(jsonfile))
 
     def find_diskitem(self, subject, axontype='Any Type', fmt=None):
         res = self.__db.findDiskItem(exactType=True, **{'_type': axontype, 'subject':subject})
@@ -67,13 +67,10 @@ class ALFAHelper(object):
         steps = ['denoising', 'eddycorrect', 'rotcorr', 'extractb0', 'fslbet.25', 'fslfast', 'ants_t1', 'ants_dwi', 'ants_aal', 'warp', 'warp_md', 'warp_md2MNI']
         for i, each in enumerate(steps):
             try:
-                print each
                 a = self.parse_command(subject, each)
             except (InputFileMissing, AttributeError):
                 print subject, 'is stuck at step', steps[i-1]
                 return steps[i-1]
-
-
         print subject, 'is complete'
         return 0
 
