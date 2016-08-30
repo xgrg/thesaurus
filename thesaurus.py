@@ -6,14 +6,18 @@ import json
 import os
 import os.path as osp
 
+class InputFileMissing(Exception):
+    pass
+
 class ALFAHelper(object):
     '''Returns filenames from existing items in the ALFA repository
     or suggests new ones according to the Axon ontology'''
-    def __init__(self, directory='/home/grg/data/ALFA_DWI'):
+    def __init__(self, directory='/home/grg/data/ALFA_DWI', jsonfile='/home/grg/git/alfa/alfa_dwi_iotypes.json'):
         from brainvisa import axon
         axon.initializeProcesses()
         import neuroHierarchy
         self.__db = neuroHierarchy.databases._databases[directory]
+        self.args_types = json.load(jsonfile)
 
     def find_diskitem(self, subject, axontype='Any Type', fmt=None):
         res = self.__db.findDiskItem(exactType=True, **{'_type': axontype, 'subject':subject})
@@ -33,25 +37,7 @@ class ALFAHelper(object):
         Strings starting with # designate hard-coded filenames.
         Types starting with ! indicate that the filenames will be returned without extension'''
         j = json.load(open(jsonfile))
-        args_types = {
-            'ants_t1': [ '@ALFA DWI B0 Brain FSL FAST White matter', '@ALFA Denoised Nobias SPM Dilated White matter', 'ALFA ANTS Elast T1 to DWI Transformation Template Filename'],
-            'ants_dwi': [ '@ALFA Denoised Nobias SPM Dilated White matter', '@ALFA DWI B0 Brain FSL FAST White matter', 'ALFA ANTS Elast DWI to T1 Transformation Template Filename'],
-            'ants_aal': [ '@ALFA Denoised Nobias T1 Image', '#/home/grg/data/templates/MNI_atlas_templates/MNI_T1.nii', 'ALFA ANTS SyN MNI to T1 Transformation Template Filename'],
-            'warp': [ '@ALFA Denoised Nobias T1 Image', 'ALFA T1 Image Warped to DWI space', '@ALFA DWI B0 Map', '@ALFA ANTS Elast T1 to DWI Transformation', '@ALFA ANTS Elast T1 to DWI Affine Transformation'],
-            'warp_md': [ '@ALFA Mean Diffusivity Image', 'ALFA DWI MD Map Warped to T1 space', '@ALFA Denoised Nobias T1 Image', '@ALFA ANTS Elast DWI to T1 Transformation', '@ALFA ANTS Elast DWI to T1 Affine Transformation'],
-            'warp_md2MNI': [ '@ALFA DWI MD Map Warped to T1 space', 'ALFA DWI MD Map Warped to MNI space', '#/home/grg/data/templates/MNI_atlas_templates/MNI_T1.nii', '@ALFA ANTS SyN MNI to T1 Affine Transformation', '@ALFA ANTS SyN MNI to T1 Inverse Transformation'],
-            'warp_AAL': ['#/home/grg/data/templates/MNI_atlas_templates/aal_MNI_V4.nii', 'ALFA AAL Atlas Warped to T1 space', 'ALFA Denoised Nobias T1 Image', '@ALFA ANTS SyN MNI to T1 Transformation', '@ALFA ANTS SyN MNI to T1 Affine Transformation'],
-            'warp_AAL2DWI': ['@ALFA AAL Atlas Warped to T1 space', 'ALFA AAL Atlas Warped to DWI space', '@ALFA DWI B0 Map', '@ALFA ANTS Elast T1 to DWI Transformation', '@ALFA ANTS Elast T1 to DWI Affine Transformation'],
-            'dtifit': ['@ALFA Denoised Corrected DWI Image', 'ALFA DWI FSL DTIFIT Template Filename', '@ALFA DWI B0 FSL Brain Mask', '@Motion-corrected Bvec File', '@Raw Bval File'],
-            'eddycorrect' : ['@ALFA Denoised LPCA DWI Image', 'ALFA Denoised Corrected DWI Image'],
-            'extractb0': ['@ALFA Denoised Corrected DWI Image', 'ALFA DWI B0 Map'],
-            'fslbet.25' : ['@ALFA DWI B0 Map', 'ALFA DWI B0 FSL Masked Brain'],
-            'fslfast': ['!ALFA DWI B0 FSL Masked Brain','ALFA DWI B0 FSL Masked Brain'],
-            'rotcorr': ['@Raw Bvec File', 'Motion-corrected Bvec File', '@FSL Eddy current Correction Logfile'],
-            'roistats': ['@ALFA AAL Atlas Warped to DWI space', '@ALFA Mean Diffusivity Image', 'ALFA Mean Diffusivity (AAL) ROI stats'],
-            'denoising': ['@ALFA DWI Raw Image']
-                }
-        types = args_types[name]
+        types = self.args_types[name]
         dsk = []
         for each in types:
             t = each.strip('@#!')
@@ -68,7 +54,7 @@ class ALFAHelper(object):
                 d = self.find_diskitem(subject, t, fmt=fmt).fullPath()
                 if each.startswith('@'):
                     if not osp.isfile(d) and not osp.isdir(d):
-                        raise Exception('%s not found (type %s) while declared as input (or remove the leading @)'%(d, t))
+                        raise InputFileMissing('%s not found (type %s) while declared as input (or remove the leading @)'%(d, t))
                 if each.startswith('!'):
                     d = self.find_diskitem(subject, t, fmt=fmt).fullPath()
                     d = d[:d.index('.')]
@@ -77,8 +63,19 @@ class ALFAHelper(object):
 
         return res
 
+    def current_stage(self, subject):
+        steps = ['denoising', 'eddycorrect', 'rotcorr', 'extractb0', 'fslbet.25', 'fslfast', 'ants_t1', 'ants_dwi', 'ants_aal', 'warp', 'warp_md', 'warp_md2MNI']
+        for i, each in enumerate(steps):
+            try:
+                print each
+                a = self.parse_command(subject, each)
+            except (InputFileMissing, AttributeError):
+                print subject, 'is stuck at step', steps[i-1]
+                return steps[i-1]
 
 
+        print subject, 'is complete'
+        return 0
 
 def parse_command(cmd, args):
     if len(args) != cmd.count('%s'):

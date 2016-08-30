@@ -16,5 +16,6 @@
 "dtifit": "fsl5.0-dtifit -k %s -o %s -m %s -r %s -b %s",
 "rotcorr": "fsl5.0-fdt_rotate_bvecs %s %s %s",
 "roistats": "AimsRoiFeatures -i %s -s %s -o %s",
+"roistats_mni": "AimsRoiFeatures -i %s -s %s -o %s",
 "denoising": "python ~/denoising/denoising.py -i %s"
 }
