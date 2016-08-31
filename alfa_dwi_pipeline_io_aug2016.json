@@ -47,7 +47,7 @@
   "roistats_mni": [
     "#/home/grg/data/templates/MNI_atlas_templates/aal_MNI_V4.nii", 
     "@ALFA DWI MD Map Warped to MNI space", 
-    "ALFA Mean Diffusivity (AAL) ROI stats in MNI space"
+    ">ALFA Mean Diffusivity (AAL) ROI stats in MNI space"
   ], 
   "warp": [
     "@ALFA Denoised Nobias T1 Image", 
@@ -97,4 +97,5 @@
     "@ALFA Denoised Nobias SPM White matter",
     ">ALFA Denoised Nobias SPM Dilated White matter"
   ]
+
 }

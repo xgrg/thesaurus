@@ -66,6 +66,7 @@ class ALFAHelper(object):
         return res
 
     def current_stage(self, subject):
+        steps = ['denoising', 'eddycorrect', 'extractb0', 'fslbet.25', 'fslfast', 'denoise_t1', 'ants_t1', 'dilate', 'ants_dwi', 'ants_aal', 'rotcorr', 'dtifit', 'warp', 'warp_md', 'warp_md2MNI', 'roistats', 'roistats_mni']
 
         def __sort_input_first__(a):
             inp = []
@@ -83,7 +84,6 @@ class ALFAHelper(object):
                 res.extend(each)
             return res
 
-        steps = ['denoising', 'eddycorrect', 'extractb0', 'fslbet.25', 'fslfast', 'denoise_t1', 'ants_t1', 'dilate', 'ants_dwi', 'ants_aal', 'rotcorr', 'dtifit', 'warp', 'warp_md', 'warp_md2MNI']
         existing_all = True
         for i, each in enumerate(steps):
             for filetype in __sort_input_first__(self.args_types[each]):
