@@ -33,14 +33,16 @@ class ALFAHelper(object):
         return list(set([each.type.name for each in self.__db.findDiskItems(**{'_type': 'Any Type'})]))
 
     def parse_command(self, subject, name, jsonfile='/home/grg/git/alfa/alfa_dwi_pipeline_aug2016.json'):
-        '''Types starting with @ indicate that the corresponding files must exist (ReadDiskItems). \n
+        '''Types starting with @ indicate that the corresponding files must exist before execution (ReadDiskItems). \n
+        Types starting with > indicate that the corresponding files must exist after execution (WriteDiskItems). \n
         Strings starting with # designate hard-coded filenames.
-        Types starting with ! indicate that the filenames will be returned without extension'''
+        Types starting with ! indicate that the filenames will be returned without extension.
+        '''
         j = json.load(open(jsonfile))
         types = self.args_types[name]
         dsk = []
         for each in types:
-            t = each.strip('@#!')
+            t = each.strip('@#!>')
             d = t
             if not each.startswith('#'):
                 if 'DTIFIT' in t:
@@ -64,13 +66,43 @@ class ALFAHelper(object):
         return res
 
     def current_stage(self, subject):
-        steps = ['denoising', 'eddycorrect', 'rotcorr', 'extractb0', 'fslbet.25', 'fslfast', 'ants_t1', 'ants_dwi', 'ants_aal', 'warp', 'warp_md', 'warp_md2MNI']
+
+        def __sort_input_first__(a):
+            inp = []
+            out = []
+            oth = []
+            for each in a:
+                if each.startswith('@'):
+                    inp.append(each)
+                elif each.startswith('>'):
+                    out.append(each)
+                else:
+                    oth.append(each)
+            res = []
+            for each in [inp, out, oth]:
+                res.extend(each)
+            return res
+
+        steps = ['denoising', 'eddycorrect', 'extractb0', 'fslbet.25', 'fslfast', 'denoise_t1', 'ants_t1', 'dilate', 'ants_dwi', 'ants_aal', 'rotcorr', 'dtifit', 'warp', 'warp_md', 'warp_md2MNI']
+        existing_all = True
         for i, each in enumerate(steps):
-            try:
-                a = self.parse_command(subject, each)
-            except (InputFileMissing, AttributeError):
-                print subject, 'is stuck at step', steps[i-1]
-                return steps[i-1]
+            for filetype in __sort_input_first__(self.args_types[each]):
+                t = filetype.strip('@#!>')
+                if filetype[0] in '@>':
+                    res = [e for e in self.__db.findDiskItems(_type=t, subject=subject)]
+
+                    if len(res) == 0:
+                        existing_all = False
+                        if filetype.startswith('@'):
+                            print subject, 'is stuck at step before', each, '(missing: %s)'%t
+                            return '%s-1'%each
+                        else:
+                            print subject, 'is stuck at step', each, '(missing: %s)'%t
+                            return each
+
+        if not existing_all:
+            print subject, 'is stuck at step', each
+            return each
         print subject, 'is complete'
         return 0
 

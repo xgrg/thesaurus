@@ -17,5 +17,6 @@
 "rotcorr": "fsl5.0-fdt_rotate_bvecs %s %s %s",
 "roistats": "AimsRoiFeatures -i %s -s %s -o %s",
 "roistats_mni": "AimsRoiFeatures -i %s -s %s -o %s",
-"denoising": "python ~/denoising/denoising.py -i %s"
+"denoising": "python /home/grg/git/alfa/denoising.py -i %s",
+"denoise_t1": "python /home/grg/git/alfa/mabonlm.py -i %s"
 }
