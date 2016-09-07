@@ -10,13 +10,18 @@
 "warp": "WarpImageMultiTransform 3 %s %s -R %s %s %s",
 "warp_md": "WarpImageMultiTransform 3 %s %s -R %s %s %s",
 "warp_md2MNI": "WarpImageMultiTransform 3 %s %s -R %s -i %s %s",
+"warp_fa": "WarpImageMultiTransform 3 %s %s -R %s %s %s",
+"warp_fa2MNI": "WarpImageMultiTransform 3 %s %s -R %s -i %s %s",
 "warp_AAL": "WarpImageMultiTransform 3 %s %s -R %s %s %s --use-NN",
 "warp_AAL2DWI": "WarpImageMultiTransform 3 %s %s -R %s %s %s --use-NN",
 "dilate": "fsl5.0-fslmaths %s -kernel sphere 2 -dilD %s",
 "dtifit": "fsl5.0-dtifit -k %s -o %s -m %s -r %s -b %s",
 "rotcorr": "fsl5.0-fdt_rotate_bvecs %s %s %s",
 "roistats": "AimsRoiFeatures -i %s -s %s -o %s",
+"roistats_fa": "AimsRoiFeatures -i %s -s %s -o %s",
 "roistats_mni": "AimsRoiFeatures -i %s -s %s -o %s",
+"roistats_fa_mni": "AimsRoiFeatures -i %s -s %s -o %s",
 "denoising": "python /home/grg/git/alfa/denoising.py -i %s",
-"denoise_t1": "python /home/grg/git/alfa/mabonlm.py -i %s"
+"denoise_t1": "python /home/grg/git/alfa/mabonlm.py -i %s",
+"radial": "fslmaths %s -add %s -div 2 %s"
 }
