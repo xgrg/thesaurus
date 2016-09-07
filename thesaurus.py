@@ -68,7 +68,7 @@ class ALFAHelper(object):
         return res
 
     def current_stage(self, subject):
-        steps = ['denoising', 'eddycorrect', 'extractb0', 'fslbet.25', 'fslfast', 'denoise_t1', 'ants_t1', 'dilate', 'ants_dwi', 'ants_aal', 'rotcorr', 'dtifit', 'warp', 'warp_md', 'warp_md2MNI', 'roistats', 'roistats_mni']
+        steps = ['denoising', 'eddycorrect', 'extractb0', 'fslbet.25', 'fslfast', 'denoise_t1', 'ants_t1', 'dilate', 'ants_dwi', 'ants_aal', 'rotcorr', 'dtifit', 'warp_AAL', 'warp_AAL2DWI', 'warp_md', 'warp_md2MNI', 'roistats', 'roistats_mni']
 
         def __sort_input_first__(a):
             inp = []
