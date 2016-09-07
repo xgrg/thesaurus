@@ -11,7 +11,9 @@ class InputFileMissing(Exception):
 
 class ALFAHelper(object):
     '''Returns filenames from existing items in the ALFA repository
-    or suggests new ones according to the Axon ontology'''
+    or suggests new ones according to the Axon ontology,
+    generates commands based on various pipelines steps (parse_command)
+    and identifies the last performed step in the processing of a subject'''
     def __init__(self, directory='/home/grg/data/ALFA_DWI', jsonfile='/home/grg/git/alfa/alfa_dwi_pipeline_io_aug2016.json'):
         from brainvisa import axon
         axon.initializeProcesses()
