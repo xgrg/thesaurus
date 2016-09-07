@@ -108,6 +108,27 @@ class ALFAHelper(object):
         print subject, 'is complete'
         return 0
 
+    def generate_batch(self, subjects, step, batchfile, create_workflow=True):
+        w = open(batchfile, 'w')
+        succeeded = []
+        for each in subjects:
+	    try:
+		w.write('%s\n'%self.parse_command(each, step))
+		succeeded.append(each)
+	    except InputFileMissing as e:
+		print 'Failed', each, e
+        w.close()
+
+        if create_workflow:
+            try:
+                import create_workflow as cw
+                import os.path as osp
+                cw.create_workflow(batchfile, "%s.workflow"%osp.splitext(batchfile)[0], names=succeeded)
+            except ImportError:
+                print 'create_workflow command not found. Check that create_workflow.py is in the same folder as thesaurus.'
+                raise
+        return succeeded
+
 def parse_command(cmd, args):
     if len(args) != cmd.count('%s'):
         raise Exception('%s (%s)\n%s\n%s'%(
