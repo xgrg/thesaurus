@@ -56,7 +56,9 @@ def identify_tissues(fast, b0, doit=False, verbose=True):
         print zip(headers, news)
 
     if not doit:
+        print '############################################'
         print 'Not renaming the files. Just printing them.'
+        print '############################################'
 
     for old in olds:
         cmd = 'mv %s %s.backup'%(old, old)
@@ -92,7 +94,7 @@ if __name__ == '__main__':
     parser.add_argument("subject", type=str, help='subject in the Axon database')
     parser.add_argument("--database", type=str, help='Axon database', required=False)
     parser.add_argument("-v", dest='verbose', action='store_true', required=False, default=True)
-    parser.add_argument("--doit", dest='doit', action='store_true', required=False, help='Identifies the labels but stops before renaming the files')
+    parser.add_argument("--doit", dest='doit', action='store_true', required=False, help='Identifies the labels and renames the files for good')
     args = parser.parse_args()
 
     subject = args.subject
