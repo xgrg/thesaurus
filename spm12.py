@@ -41,6 +41,7 @@ if __name__ == '__main__':
     cmd = 'python -m brainvisa.axon.runprocess --enabledb SPM12Segment_generic TPM_template=%s batch_location=%s seg8_mat=%s t1mri=%s grey_native=%s white_native=%s csf_native=%s skull_native=%s scalp_native=%s'
     cmd = cmd%(tpm, batch_location, seg8, dsk.fullPath(), s[0], s[1], s[2], s[3], s[4])
     print cmd
+    os.system(cmd)
 
 
 
