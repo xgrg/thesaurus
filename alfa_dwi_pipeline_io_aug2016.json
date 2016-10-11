@@ -46,7 +46,7 @@
   "warp_aal_to_t1": [
     "#/home/grg/data/templates/MNI_atlas_templates/aal_MNI_V4.nii", 
     ">ALFA AAL Atlas Warped to T1 space", 
-    ">ALFA Denoised Nobias T1 Image", 
+    "@ALFA Denoised Nobias T1 Image", 
     "@ALFA ANTS SyN MNI to T1 Transformation", 
     "@ALFA ANTS SyN MNI to T1 Affine Transformation"
   ], 
