@@ -10,7 +10,7 @@ import json
 import pandas as pd
 from datetime import datetime
 
-def get_subject_dates(subject, db, types, datetype='m'):
+def get_subject_dates(subject, db, types, datetype='c'):
     ''' Given a subject, an Axon Database and a list of Axon types,
     collects corresponding DiskItems and return their system dates in a dictionary.'''
     if not datetype in 'mc':
@@ -37,7 +37,7 @@ def collect_types(jsonfile):
     return list(types)
 
 
-def check_subject(subject, database, jsonfile, verbose=True):
+def check_subject(subject, database, jsonfile, antecfile, verbose=True):
     ''' Given a subject, the path to a database and a JSON file describing
     input/outputs of a pipeline, checks'''
     from brainvisa import axon
@@ -45,7 +45,7 @@ def check_subject(subject, database, jsonfile, verbose=True):
     import neuroHierarchy
     db = neuroHierarchy.databases.database(osp.abspath(database))
     j = json.load(open(jsonfile))
-    types = collect_types(jsonfile)
+    types = json.load(open(antecfile)) #collect_types(jsonfile)
     dates = get_subject_dates(subject, db ,types)
 
     issues = []
@@ -165,7 +165,7 @@ if __name__ == '__main__':
     verbose = args.verbose
 
     jsonfile = args.json
-    order = args.order
+    antecfile = args.order
     if args.order is None:
         antecfile = '/home/grg/git/alfa/alfa_dwi_pipeline_antecedency.json'
     if args.json is None:
@@ -189,10 +189,10 @@ if __name__ == '__main__':
         f.write(pd.DataFrame(table).to_html())
         f.close()
 
-        subjects = [subject] #sorted([e.get('subject') for e in db.findDiskItems(_type=types[0])]) #['10010', '10015']
+        subjects = [subject]
 
     for s in subjects:
-        check_subject(s, database, jsonfile)
+        check_subject(s, database, jsonfile, antecfile)
 
     build_graph(subjects, database, types)
 
