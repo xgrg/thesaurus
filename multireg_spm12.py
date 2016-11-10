@@ -1,9 +1,9 @@
 #!/usr/bin/env python
-import nipype
-from builtins import range
 import argparse
 import textwrap
 try:
+    import nipype
+    from builtins import range
     import nipype.interfaces.io as nio           # Data i/o
     import nipype.interfaces.spm as spm          # spm
     import nipype.interfaces.fsl as fsl          # fsl
@@ -20,7 +20,7 @@ try:
     import os
     from glob import glob
 
-except ImportError:
+except ImportError as e:
     raise ImportError('Did you activate jupyter virtualenv (nipype) ?')
 
 MatlabCommand.set_default_paths('/usr/local/MATLAB/R2014a/toolbox/spm12')
