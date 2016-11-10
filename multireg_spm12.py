@@ -27,8 +27,8 @@ MatlabCommand.set_default_paths('/usr/local/MATLAB/R2014a/toolbox/spm12')
 MatlabCommand.set_default_matlab_cmd('matlab -nodesktop -nosplash')
 
 
-def run_analysis(param, excel_file, destdir, explicitmask):
-    ''' Runs the analysis over a given type of parametric maps (param),
+def multiple_regression_analysis(param, excel_file, destdir, explicitmask):
+    ''' Runs a Multiple Regression analysis over a given type of parametric maps (param),
     using data from an Excel sheet as regressors (columns in 'names')
     and a given explicit mask.
 
@@ -92,8 +92,9 @@ def run_analysis(param, excel_file, destdir, explicitmask):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter,
 	    description=textwrap.dedent('''\
-                    Runs an SPM multiple regression full analysis using data from a given table as regressors,
+                    Runs an SPM Multiple Regression full analysis using data from a given table as regressors,
                     using a given explicit mask and writes the results in a given directory.
+                    Consists in three steps: Model design / Model estimation / Contrast estimation
 	    '''))
 
     parser.add_argument("param", type=str, help='Type of parametric maps to run the analysis on')
@@ -109,4 +110,4 @@ if __name__ == '__main__':
     mask = args.mask
     destdir = args.destdir
 
-    run_analysis(param, excel, destdir, mask)
+    multiple_regression_analysis(param, excel, destdir, mask)
