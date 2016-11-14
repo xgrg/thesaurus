@@ -27,7 +27,7 @@ MatlabCommand.set_default_paths('/usr/local/MATLAB/R2014a/toolbox/spm12')
 MatlabCommand.set_default_matlab_cmd('matlab -nodesktop -nosplash')
 
 
-def multiple_regression_analysis(param, excel_file, destdir, explicitmask):
+def multiple_regression_analysis(param, excel_file, destdir, explicitmask, verbose=True):
     ''' Runs a Multiple Regression analysis over a given type of parametric maps (param),
     using data from an Excel sheet as regressors (columns in 'names')
     and a given explicit mask.
@@ -40,13 +40,15 @@ def multiple_regression_analysis(param, excel_file, destdir, explicitmask):
                     'age23', 'age24', 'age33', 'age34', 'age44',
                     'agesq23', 'agesq24', 'agesq33', 'agesq34', 'agesq44',
                     'Gender(0=female)', 'Years of Education']
-    print 'Columns used in the model:', names
+    if verbose:
+        print 'Columns used in the model:', names
 
     # Model Design
     vectors = [data[each].tolist() for each in names]
     centering = [1] * len(names)
     scans = data[param].tolist()
-    print 'Scans (%s):'%len(scans), scans
+    if verbose:
+        print 'Scans (%s):'%len(scans), scans
     covariates = []
     for name, v, c in zip(names, vectors, centering):
         covariates.append(dict(name=name, centering=c, vector=v))
@@ -87,7 +89,7 @@ def multiple_regression_analysis(param, excel_file, destdir, explicitmask):
                         ('beta_images', 'beta_images'),
                         ('residual_image', 'residual_image')]), ])
     a.config['execution']['stop_on_first_rerun'] = True
-    a.run()
+    return a
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -110,4 +112,5 @@ if __name__ == '__main__':
     mask = args.mask
     destdir = args.destdir
 
-    multiple_regression_analysis(param, excel, destdir, mask)
+    a = multiple_regression_analysis(param, excel, destdir, mask)
+    a.run()
