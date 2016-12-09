@@ -152,7 +152,7 @@ if __name__ == '__main__':
     parser.add_argument("--run", dest='action', action='store_const', const=2)
     parser.add_argument("--list", dest='action', action='store_const', const=3)
     parser.add_argument("json", type=str, help='JSON file containing all the commands')
-    parser.add_argument("args", nargs='*', default=None, type=str, help='Arguments of the command (separated by ;)')
+    parser.add_argument("args", nargs='*', default=None, type=str, help='Arguments of the command')
     args = parser.parse_args()
 
     action = args.action
