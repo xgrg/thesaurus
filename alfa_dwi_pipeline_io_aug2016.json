@@ -191,5 +191,7 @@
   ">ALFA DWI RD Smoothed Map Warped to MNI space"
   ],
   "spm12":["@ALFA Denoised Nobias T1 Image"
+  ],
+  "nipype_spm12":["@ALFA Denoised Nobias T1 Image"
   ]
 }

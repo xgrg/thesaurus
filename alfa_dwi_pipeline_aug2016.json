@@ -35,5 +35,6 @@
 "smooth_fa" : "AimsGaussianSmoothing -i %s -o %s -x 2.7 -y 2.7 -z 2.7",
 "smooth_l1" : "AimsGaussianSmoothing -i %s -o %s -x 2.7 -y 2.7 -z 2.7",
 "smooth_rd" : "AimsGaussianSmoothing -i %s -o %s -x 2.7 -y 2.7 -z 2.7",
-"spm12": "python /home/grg/git/alfa/spm12.py -i %s"
+"spm12": "python /home/grg/git/alfa/spm/spm12.py -i %s",
+"nipype_spm12": "python /home/grg/git/alfa/spm/nipype_spm12.py -i %s"
 }
