@@ -28,7 +28,7 @@
 "roistats_l1_mni": "AimsRoiFeatures -i %s -s %s -o %s",
 "roistats_rd": "AimsRoiFeatures -i %s -s %s -o %s",
 "roistats_rd_mni": "AimsRoiFeatures -i %s -s %s -o %s",
-"denoising": "python /home/grg/git/alfa/denoising.py -i %s",
+"denoising": "python /home/grg/git/alfa/denoising.py %s --rescale",
 "denoise_t1": "python /home/grg/git/alfa/mabonlm.py -i %s",
 "radial": "fsl5.0-fslmaths %s -add %s -div 2 %s",
 "smooth_md" : "AimsGaussianSmoothing -i %s -o %s -x 2.7 -y 2.7 -z 2.7",
